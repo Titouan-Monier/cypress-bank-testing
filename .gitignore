@@ -1,0 +1,22 @@
+# Back-end
+**/target/
+*.class
+*.jar
+*.war
+.mvn/
+
+# Front-end
+**/node_modules/
+**/dist/
+**/.vite/
+*.log
+
+# Cypress
+**/cypress/videos/
+**/cypress/screenshots/
+
+# IDE et OS
+.vscode/
+.idea/
+*.iml
+.DS_Store
