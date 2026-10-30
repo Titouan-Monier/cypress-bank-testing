@@ -1,0 +1,43 @@
+name: E2E Cypress Bank Testing
+
+on:
+  push:
+    branches: ["main"]
+
+jobs:
+  cypress-run:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Récupération du code
+        uses: actions/checkout@v4
+
+      - name: ☕ Configuration Java 17 (Back-End)
+        uses: actions/setup-java@v3
+        with:
+          java-version: "17"
+          distribution: "temurin"
+          cache: "maven"
+
+      - name: 🚀 Lancement du Back-End Spring Boot
+        run: |
+          cd Cypress-bank-back
+          mvn spring-boot:run &
+
+      - name: ⏳ Attente de l'API Bancaire
+        run: npx wait-on http://localhost:8080/api/dashboard
+
+      - name: 🟢 Configuration Node.js (Front-End)
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+          cache: "npm"
+          cache-dependency-path: Cypress-bank-front/package-lock.json
+
+      - name: 🧪 Lancement du Front-End et exécution de Cypress
+        uses: cypress-io/github-action@v6
+        with:
+          working-directory: Cypress-bank-front
+          start: npm run dev
+          wait-on: "http://localhost:5173"
+          wait-on-timeout: 120
